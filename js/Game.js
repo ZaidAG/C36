@@ -8,6 +8,25 @@ class Game {
     })
    
   }
+    play(){
+     form.hideForm();
+     textSize(25);
+     text("Game Starts!!!!",120,100);
+     Player.getPlayerInfo();
+     if(allPlayers!==undefined){
+       var displayPosition=120;
+       for(var plr in allPlayers){
+      if(plr==="player"+player.index){
+        fill("yellow");
+      }else{
+        fill("red");
+      }
+        displayPosition=displayPosition+20;
+        textSize(15);
+        text(allPlayers[plr].name+" : "+allPlayers[plr].distance,100,displayPosition);
+       }
+     }
+   } 
 
   update(state){
     database.ref('/').update({
@@ -15,10 +34,14 @@ class Game {
     });
   }
 
-  start(){
+  async start(){
     if(gameState === 0){
       player = new Player();
-      player.getCount();
+      var playerCountReference=await database.ref("playerCount").once("value");
+      if(playerCountReference.exists()){
+        playerCount=playerCountReference.val();
+        player.getCount();
+      }
       form = new Form()
       form.display();
     }
